@@ -1,0 +1,15 @@
+---
+- name: Update k3s worker nodes using dnf
+  hosts: k3s worker nodes
+  serial: 1
+  become: yes
+  gather_facts: yes
+  tasks:
+    - name: Run full dnf upgrade
+      ansible.builtin.command: dnf -y update
+      register: update_out
+      changed_when: update_out.rc == 0 and (update_out.stdout | length) > 0
+
+    - name: Show update output
+      ansible.builtin.debug:
+        var: update_out.stdout_lines

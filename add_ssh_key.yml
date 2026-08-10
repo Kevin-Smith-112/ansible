@@ -1,0 +1,18 @@
+---
+- name: Install authorised SSH key for root
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Ensure /root/.ssh exists
+      file:
+        path: /root/.ssh
+        state: directory
+        mode: '0700'
+        owner: root
+        group: root
+
+    - name: Install control host's public key into root authorized_keys
+      authorized_key:
+        user: root
+        state: present
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
