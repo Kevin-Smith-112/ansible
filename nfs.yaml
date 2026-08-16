@@ -20,9 +20,9 @@
       ansible.builtin.file:
         path: "{{ nfs_export_path }}"
         state: directory
-        owner: nfsnobody
-        group: nfsnobody
-        mode: '0777'
+        owner: root
+        group: root
+        mode: '0755'
 
     - name: Configure the NFS export
       ansible.builtin.lineinfile:
