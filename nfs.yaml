@@ -44,14 +44,16 @@
       ansible.builtin.command: exportfs -ra
       changed_when: true
 
-    - name: Open NFS ports in firewalld
-      ansible.posix.firewalld:
-        service: "{{ item }}"
-        permanent: true
-        immediate: true
-        state: enabled
+    - name: Open NFS services in firewalld
+      ansible.builtin.command: firewall-cmd --permanent --add-service={{ item }}
       loop:
         - nfs
         - mountd
         - rpc-bind
       when: ansible_facts.services is defined and 'firewalld.service' in ansible_facts.services
+      changed_when: true
+
+    - name: Reload firewalld
+      ansible.builtin.command: firewall-cmd --reload
+      when: ansible_facts.services is defined and 'firewalld.service' in ansible_facts.services
+      changed_when: true
